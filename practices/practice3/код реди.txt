@@ -1,0 +1,112 @@
+$MOD51
+ORG 00h
+
+START:
+        MOV P0, #038h
+        MOV P2, #1
+        MOV P2, #0
+
+        MOV P0, #00Ch
+        MOV P2, #1
+        MOV P2, #0
+
+        MOV P0, #006h
+        MOV P2, #1
+        MOV P2, #0
+
+        MOV P0, #001h
+        MOV P2, #1
+        MOV P2, #0
+
+        MOV R7, #0FFh
+DELAY:  DJNZ R7, DELAY
+
+        MOV R0, #0C3h
+        MOV R2, #0
+
+SCROLL:
+        MOV P0, #001h
+        MOV P2, #1
+        MOV P2, #0
+
+        MOV A, R0
+        MOV P0, A
+        MOV P2, #1
+        MOV P2, #0
+
+        MOV A, R0
+        MOV R3, A
+        MOV R1, #5
+
+SEND_LOOP:
+        MOV A, R3
+        MOV P0, A
+        MOV P2, #1
+        MOV P2, #0
+
+        MOV A, R1
+        CJNE A, #5, CHECK_E
+        MOV P0, #'H'
+        SJMP WRITE_CHAR
+CHECK_E:
+        CJNE A, #4, CHECK_L1
+        MOV P0, #'E'
+        SJMP WRITE_CHAR
+CHECK_L1:
+        CJNE A, #3, CHECK_L2
+        MOV P0, #'L'
+        SJMP WRITE_CHAR
+CHECK_L2:
+        CJNE A, #2, CHECK_O
+        MOV P0, #'L'
+        SJMP WRITE_CHAR
+CHECK_O:
+        MOV P0, #'O'
+
+WRITE_CHAR:
+        MOV P2, #3
+        MOV P2, #2
+
+        MOV A, R3
+        INC A
+        MOV R3, A
+
+        MOV A, R2
+        JZ SECOND_LINE
+
+        MOV A, R3
+        CJNE A, #88h, NEXT_CHAR
+        MOV R3, #80h
+        SJMP NEXT_CHAR
+
+SECOND_LINE:
+        MOV A, R3
+        CJNE A, #0C8h, NEXT_CHAR
+        MOV R3, #080h
+
+NEXT_CHAR:
+        DJNZ R1, SEND_LOOP
+
+        MOV R7, #0FFh
+WAIT:   DJNZ R7, WAIT
+
+        MOV A, R0
+        INC A
+        MOV R0, A
+
+        MOV A, R2
+        JZ CHECK_SECOND
+
+        MOV A, R0
+        CJNE A, #88h, SCROLL
+        MOV R0, #80h
+        LJMP SCROLL
+
+CHECK_SECOND:
+        MOV A, R0
+        CJNE A, #0C8h, SCROLL
+        MOV R0, #80h
+        MOV R2, #1
+        LJMP SCROLL
+
+END

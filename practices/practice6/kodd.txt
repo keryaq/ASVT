@@ -1,0 +1,41 @@
+$MOD51
+
+ORG 0000h
+    LJMP START
+
+START:
+    MOV R0, #30h
+    MOV R7, #20
+    MOV A, #41h
+FILL:
+    MOV @R0, A
+    INC R0
+    INC A
+    DJNZ R7, FILL
+
+    MOV TMOD, #20h
+	MOV PCON, #80h
+    MOV TH1, #0F3h
+    MOV TL1, #0F3h
+    SETB TR1
+
+    MOV SCON, #0C0h
+	SETB TB8 
+    CLR TI
+
+    MOV R0, #30h
+    MOV R7, #20
+SEND_LOOP:
+    MOV A, @R0
+    MOV SBUF, A
+
+WAIT_TI:
+    JNB TI, WAIT_TI
+    CLR TI
+
+    INC R0
+    DJNZ R7, SEND_LOOP
+
+    SJMP $
+
+END

@@ -1,0 +1,28 @@
+$MOD51    ; This includes 8051 definitions for the Metalink assembler
+
+org 00h
+
+    clr P1.0
+    mov dptr, #00h
+    mov r2, #04h
+    mov r1, #00h
+    mov r3, #0AAh
+
+test_loop:
+    mov a, r3
+    movx @dptr, a
+    movx a, @dptr
+    xrl a, #0AAh
+    jnz error
+
+    inc dptr
+    djnz r1, test_loop
+    djnz r2, test_loop
+
+    sjmp $
+
+error:
+    setb P1.0
+    sjmp $
+
+END

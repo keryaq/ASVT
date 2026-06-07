@@ -1,0 +1,144 @@
+$MOD51
+ORG 00h
+
+START:
+        MOV P0, #038h
+        MOV P2, #1
+        MOV P2, #0
+
+        MOV P0, #00Ch
+        MOV P2, #1
+        MOV P2, #0
+
+        MOV P0, #006h
+        MOV P2, #1
+        MOV P2, #0
+
+        MOV P0, #001h
+        MOV P2, #1
+        MOV P2, #0
+
+        MOV R7, #0FFh
+DELAY:  DJNZ R7, DELAY
+
+        MOV R0, #0C3h
+        MOV R2, #0
+
+SCROLL:
+        MOV P0, #001h
+        MOV P2, #1
+        MOV P2, #0
+
+        MOV A, R0
+        MOV P0, A
+        MOV P2, #1
+        MOV P2, #0
+
+        MOV A, R0
+        MOV R3, A
+        MOV R1, #13          ; 13 ????????: "?????? ??????"
+
+SEND_LOOP:
+        MOV A, R3
+        MOV P0, A
+        MOV P2, #1
+        MOV P2, #0
+
+        MOV A, R1
+        CJNE A, #13, CHECK_12
+        MOV P0, #171         ; ?
+        SJMP WRITE_CHAR
+CHECK_12:
+        CJNE A, #12, CHECK_11
+        MOV P0, #169         ; ?
+        SJMP WRITE_CHAR
+CHECK_11:
+        CJNE A, #11, CHECK_10
+        MOV P0, #177         ; ?
+        SJMP WRITE_CHAR
+CHECK_10:
+        CJNE A, #10, CHECK_9
+        MOV P0, #169         ; ?
+        SJMP WRITE_CHAR
+CHECK_9:
+        CJNE A, #9, CHECK_8
+        MOV P0, #172         ; ?
+        SJMP WRITE_CHAR
+CHECK_8:
+        CJNE A, #8, CHECK_7
+        MOV P0, #172         ; ?
+        SJMP WRITE_CHAR
+CHECK_7:
+        CJNE A, #7, CHECK_6
+        MOV P0, #' '         ; ?????? (32)
+        SJMP WRITE_CHAR
+CHECK_6:
+        CJNE A, #6, CHECK_5
+        MOV P0, #179         ; ?
+        SJMP WRITE_CHAR
+CHECK_5:
+        CJNE A, #5, CHECK_4
+        MOV P0, #191         ; ?
+        SJMP WRITE_CHAR
+CHECK_4:
+        CJNE A, #4, CHECK_3
+        MOV P0, #177         ; ?
+        SJMP WRITE_CHAR
+CHECK_3:
+        CJNE A, #3, CHECK_2
+        MOV P0, #174         ; ?
+        SJMP WRITE_CHAR
+CHECK_2:
+        CJNE A, #2, CHECK_1
+        MOV P0, #169         ; ?
+        SJMP WRITE_CHAR
+CHECK_1:
+        MOV P0, #174         ; ?
+
+WRITE_CHAR:
+        MOV P2, #3
+        MOV P2, #2
+
+        MOV A, R3
+        INC A
+        MOV R3, A
+
+        MOV A, R2
+        JZ SECOND_LINE
+
+        MOV A, R3
+        CJNE A, #88h, NEXT_CHAR
+        MOV R3, #80h
+        SJMP NEXT_CHAR
+
+SECOND_LINE:
+        MOV A, R3
+        CJNE A, #0C8h, NEXT_CHAR
+        MOV R3, #080h
+
+NEXT_CHAR:
+        DJNZ R1, SEND_LOOP
+
+        MOV R7, #0FFh
+WAIT:   DJNZ R7, WAIT
+
+        MOV A, R0
+        INC A
+        MOV R0, A
+
+        MOV A, R2
+        JZ CHECK_SECOND
+
+        MOV A, R0
+        CJNE A, #88h, SCROLL
+        MOV R0, #80h
+        LJMP SCROLL
+
+CHECK_SECOND:
+        MOV A, R0
+        CJNE A, #0C8h, SCROLL
+        MOV R0, #80h
+        MOV R2, #1
+        LJMP SCROLL
+
+END

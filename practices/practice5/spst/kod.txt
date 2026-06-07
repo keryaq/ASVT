@@ -1,0 +1,245 @@
+$MOD51
+
+RS  EQU P3.0
+E   EQU P3.1
+
+ORG 0000H
+    LJMP START
+
+ORG 0030H
+START:
+    MOV SP, #60H
+    MOV P1, #0FFH
+    ACALL LCD_INIT
+    ACALL LCD_CLEAR
+    MOV R1, #0          
+    MOV R2, #0          
+    MOV R3, #0          
+
+MAIN:
+    MOV P1, #0FFH
+    CLR P1.0
+    ACALL DELAY_S
+    JNB P1.3, K1_M
+    JNB P1.4, K2_M
+    JNB P1.5, K3_M
+    JNB P1.6, K4_M
+    JNB P1.7, K5_M
+    
+    MOV P1, #0FFH
+    CLR P1.1
+    ACALL DELAY_S
+    JNB P1.3, K6_M
+    JNB P1.4, K7_M
+    JNB P1.5, K8_M
+    JNB P1.6, K9_M
+    JNB P1.7, K10_M
+    
+    MOV P1, #0FFH
+    CLR P1.2
+    ACALL DELAY_S
+    JNB P1.3, K11_M
+    JNB P1.4, K12_M
+    JNB P1.5, K13_M
+    JNB P1.6, K14_M
+    JNB P1.7, K15_M
+    LJMP MAIN
+
+K1_M: 
+    MOV A, #31H
+    LJMP HANDLE
+K2_M: 
+    MOV A, #32H
+    LJMP HANDLE
+K3_M: 
+    MOV A, #33H
+    LJMP HANDLE
+K4_M: 
+    MOV A, #34H
+    LJMP HANDLE
+K5_M: 
+    MOV A, #35H
+    LJMP HANDLE
+K6_M: 
+    MOV A, #36H
+    LJMP HANDLE
+K7_M: 
+    MOV A, #37H
+    LJMP HANDLE
+K8_M: 
+    MOV A, #38H
+    LJMP HANDLE
+K9_M: 
+    MOV A, #39H
+    LJMP HANDLE
+K10_M: 
+    MOV A, #30H
+    LJMP HANDLE
+K11_M: 
+    MOV A, #2BH
+    LJMP HANDLE
+K12_M: 
+    MOV A, #2DH
+    LJMP HANDLE
+K13_M: 
+    MOV A, #2AH
+    LJMP HANDLE
+K14_M: 
+    MOV A, #3DH
+    LJMP HANDLE
+K15_M: 
+    MOV A, #43H
+    LJMP HANDLE
+
+HANDLE:
+    MOV B, A
+    CJNE A, #43H, NOT_CLEAR
+    ACALL LCD_CLEAR
+    MOV R1, #0
+    MOV R2, #0
+    MOV R3, #0
+    LJMP DONE
+
+NOT_CLEAR:
+    CJNE A, #3DH, NOT_EQU
+    ACALL LCD_CLEAR
+    ACALL CALCULATE
+    MOV A, R2
+    ACALL OUT_NUM
+    MOV R1, A
+    LJMP DONE
+
+NOT_EQU:
+    MOV A, B
+    CLR C
+    SUBB A, #30H
+    JC IS_OPERATOR
+    MOV A, B
+    SUBB A, #3AH
+    JNC IS_OPERATOR
+
+    MOV A, B
+    ACALL LCD_CHAR
+    ANL A, #0FH
+    MOV R4, A
+    MOV A, R1
+    MOV B, #10
+    MUL AB
+    ADD A, R4
+    MOV R1, A
+    LJMP DONE
+
+IS_OPERATOR:
+    MOV A, B
+    ACALL LCD_CHAR      
+    MOV A, R1
+    MOV R2, A           
+    MOV R1, #0          
+    MOV R3, B           
+    LJMP DONE
+
+DONE:
+    ACALL DELAY_M       
+    MOV P1, #0FFH
+    LJMP MAIN
+
+CALCULATE:
+    MOV A, R3
+    CJNE A, #2BH, TRY_SUB
+    MOV A, R2
+    ADD A, R1
+    MOV R2, A
+    RET
+TRY_SUB:
+    CJNE A, #2DH, TRY_MUL
+    MOV A, R2
+    CLR C
+    SUBB A, R1
+    MOV R2, A
+    RET
+TRY_MUL:
+    MOV A, R2
+    MOV B, R1
+    MUL AB
+    MOV R2, A
+    RET
+
+OUT_NUM:
+    MOV B, #100
+    DIV AB
+    JZ SKIP_H          ; ?????????? ?????, ???? 0
+    ADD A, #30H
+    ACALL LCD_CHAR
+    SJMP DISP_TENS     ; ???? ???? ?????, ??????? ??????? ? ????? ??????
+
+SKIP_H:
+    MOV A, B
+    MOV B, #10
+    DIV AB
+    JZ SKIP_T          ; ?????????? ???????, ???? 0 (??? ????? < 10)
+    ADD A, #30H
+    ACALL LCD_CHAR
+    SJMP DISP_ONES
+
+DISP_TENS:
+    MOV A, B
+    MOV B, #10
+    DIV AB
+    ADD A, #30H
+    ACALL LCD_CHAR
+
+DISP_ONES:
+    MOV A, B
+    ADD A, #30H
+    ACALL LCD_CHAR
+    RET
+
+SKIP_T:
+    MOV A, B           ; ???? ????????, ???? ? ?????, ? ??????? = 0
+    ADD A, #30H
+    ACALL LCD_CHAR     ; ??????? ?????? ???????
+    RET
+
+
+LCD_INIT:
+    MOV A, #38H
+    ACALL LCD_CMD
+    MOV A, #0CH
+    ACALL LCD_CMD
+    RET
+
+LCD_CMD:
+    CLR RS
+    MOV P2, A
+    SETB E
+    CLR E
+    ACALL DELAY_S
+    RET
+
+LCD_CHAR:
+    SETB RS
+    MOV P2, A
+    SETB E
+    CLR E
+    ACALL DELAY_S
+    RET
+
+LCD_CLEAR:
+    MOV A, #01H
+    ACALL LCD_CMD
+    RET
+
+DELAY_S:
+    MOV R7, #10
+    DJNZ R7, $
+    RET
+
+DELAY_M:
+    MOV R5, #20     ; ????????? ??? ???????? ???????
+D_LOOP:
+    MOV R4, #80     ; ????????? ??? ???????? ???????
+    DJNZ R4, $
+    DJNZ R5, D_LOOP
+    RET
+
+END

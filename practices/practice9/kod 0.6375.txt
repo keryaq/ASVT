@@ -1,0 +1,445 @@
+$MOD51
+
+ORG 0000H
+    LJMP START
+
+ORG 0030H
+
+START:
+    MOV P1, #00H
+
+MAIN:
+    ; === 1) ?????? 0? ? 0.125? ===
+    MOV P1, #50
+
+    ; === 2) ?????????? 50 ???????? (50 ? 100), ??? +1, 5??? = 250??? ===
+    MOV P1, #50
+    NOP
+    NOP
+    NOP
+    MOV P1, #51
+    NOP
+    NOP
+    NOP
+    MOV P1, #52
+    NOP
+    NOP
+    NOP
+    MOV P1, #53
+    NOP
+    NOP
+    NOP
+    MOV P1, #54
+    NOP
+    NOP
+    NOP
+    MOV P1, #55
+    NOP
+    NOP
+    NOP
+    MOV P1, #56
+    NOP
+    NOP
+    NOP
+    MOV P1, #57
+    NOP
+    NOP
+    NOP
+    MOV P1, #58
+    NOP
+    NOP
+    NOP
+    MOV P1, #59
+    NOP
+    NOP
+    NOP
+    MOV P1, #60
+    NOP
+    NOP
+    NOP
+    MOV P1, #61
+    NOP
+    NOP
+    NOP
+    MOV P1, #62
+    NOP
+    NOP
+    NOP
+    MOV P1, #63
+    NOP
+    NOP
+    NOP
+    MOV P1, #64
+    NOP
+    NOP
+    NOP
+    MOV P1, #65
+    NOP
+    NOP
+    NOP
+    MOV P1, #66
+    NOP
+    NOP
+    NOP
+    MOV P1, #67
+    NOP
+    NOP
+    NOP
+    MOV P1, #68
+    NOP
+    NOP
+    NOP
+    MOV P1, #69
+    NOP
+    NOP
+    NOP
+    MOV P1, #70
+    NOP
+    NOP
+    NOP
+    MOV P1, #71
+    NOP
+    NOP
+    NOP
+    MOV P1, #72
+    NOP
+    NOP
+    NOP
+    MOV P1, #73
+    NOP
+    NOP
+    NOP
+    MOV P1, #74
+    NOP
+    NOP
+    NOP
+    MOV P1, #75
+    NOP
+    NOP
+    NOP
+    MOV P1, #76
+    NOP
+    NOP
+    NOP
+    MOV P1, #77
+    NOP
+    NOP
+    NOP
+    MOV P1, #78
+    NOP
+    NOP
+    NOP
+    MOV P1, #79
+    NOP
+    NOP
+    NOP
+    MOV P1, #80
+    NOP
+    NOP
+    NOP
+    MOV P1, #81
+    NOP
+    NOP
+    NOP
+    MOV P1, #82
+    NOP
+    NOP
+    NOP
+    MOV P1, #83
+    NOP
+    NOP
+    NOP
+    MOV P1, #84
+    NOP
+    NOP
+    NOP
+    MOV P1, #85
+    NOP
+    NOP
+    NOP
+    MOV P1, #86
+    NOP
+    NOP
+    NOP
+    MOV P1, #87
+    NOP
+    NOP
+    NOP
+    MOV P1, #88
+    NOP
+    NOP
+    NOP
+    MOV P1, #89
+    NOP
+    NOP
+    NOP
+    MOV P1, #90
+    NOP
+    NOP
+    NOP
+    MOV P1, #91
+    NOP
+    NOP
+    NOP
+    MOV P1, #92
+    NOP
+    NOP
+    NOP
+    MOV P1, #93
+    NOP
+    NOP
+    NOP
+    MOV P1, #94
+    NOP
+    NOP
+    NOP
+    MOV P1, #95
+    NOP
+    NOP
+    NOP
+    MOV P1, #96
+    NOP
+    NOP
+    NOP
+    MOV P1, #97
+    NOP
+    NOP
+    NOP
+    MOV P1, #98
+    NOP
+    NOP
+    NOP
+    MOV P1, #99
+    NOP
+    NOP
+    NOP
+    MOV P1, #100
+    NOP
+    NOP
+    NOP
+
+    ; === 3) ?????? 0.25? ? 0.5? ===
+    MOV P1, #200
+
+    ; === 4) ???? 50 ???????? (200 ? 100), ??? -2, 5??? = 250??? ===
+    MOV P1, #200
+    NOP
+    NOP
+    NOP
+    MOV P1, #198
+    NOP
+    NOP
+    NOP
+    MOV P1, #196
+    NOP
+    NOP
+    NOP
+    MOV P1, #194
+    NOP
+    NOP
+    NOP
+    MOV P1, #192
+    NOP
+    NOP
+    NOP
+    MOV P1, #190
+    NOP
+    NOP
+    NOP
+    MOV P1, #188
+    NOP
+    NOP
+    NOP
+    MOV P1, #186
+    NOP
+    NOP
+    NOP
+    MOV P1, #184
+    NOP
+    NOP
+    NOP
+    MOV P1, #182
+    NOP
+    NOP
+    NOP
+    MOV P1, #180
+    NOP
+    NOP
+    NOP
+    MOV P1, #178
+    NOP
+    NOP
+    NOP
+    MOV P1, #176
+    NOP
+    NOP
+    NOP
+    MOV P1, #174
+    NOP
+    NOP
+    NOP
+    MOV P1, #172
+    NOP
+    NOP
+    NOP
+    MOV P1, #170
+    NOP
+    NOP
+    NOP
+    MOV P1, #168
+    NOP
+    NOP
+    NOP
+    MOV P1, #166
+    NOP
+    NOP
+    NOP
+    MOV P1, #164
+    NOP
+    NOP
+    NOP
+    MOV P1, #162
+    NOP
+    NOP
+    NOP
+    MOV P1, #160
+    NOP
+    NOP
+    NOP
+    MOV P1, #158
+    NOP
+    NOP
+    NOP
+    MOV P1, #156
+    NOP
+    NOP
+    NOP
+    MOV P1, #154
+    NOP
+    NOP
+    NOP
+    MOV P1, #152
+    NOP
+    NOP
+    NOP
+    MOV P1, #150
+    NOP
+    NOP
+    NOP
+    MOV P1, #148
+    NOP
+    NOP
+    NOP
+    MOV P1, #146
+    NOP
+    NOP
+    NOP
+    MOV P1, #144
+    NOP
+    NOP
+    NOP
+    MOV P1, #142
+    NOP
+    NOP
+    NOP
+    MOV P1, #140
+    NOP
+    NOP
+    NOP
+    MOV P1, #138
+    NOP
+    NOP
+    NOP
+    MOV P1, #136
+    NOP
+    NOP
+    NOP
+    MOV P1, #134
+    NOP
+    NOP
+    NOP
+    MOV P1, #132
+    NOP
+    NOP
+    NOP
+    MOV P1, #130
+    NOP
+    NOP
+    NOP
+    MOV P1, #128
+    NOP
+    NOP
+    NOP
+    MOV P1, #126
+    NOP
+    NOP
+    NOP
+    MOV P1, #124
+    NOP
+    NOP
+    NOP
+    MOV P1, #122
+    NOP
+    NOP
+    NOP
+    MOV P1, #120
+    NOP
+    NOP
+    NOP
+    MOV P1, #118
+    NOP
+    NOP
+    NOP
+    MOV P1, #116
+    NOP
+    NOP
+    NOP
+    MOV P1, #114
+    NOP
+    NOP
+    NOP
+    MOV P1, #112
+    NOP
+    NOP
+    NOP
+    MOV P1, #110
+    NOP
+    NOP
+    NOP
+    MOV P1, #108
+    NOP
+    NOP
+    NOP
+    MOV P1, #106
+    NOP
+    NOP
+    NOP
+    MOV P1, #104
+    NOP
+    NOP
+    NOP
+    MOV P1, #102
+    NOP
+    NOP
+    NOP
+    MOV P1, #100
+    NOP
+    NOP
+    NOP
+
+    ; === 5) ????? 0.25? = 250??? ===
+    MOV R0, #124
+PLATO:
+    DJNZ R0, PLATO
+
+    ; === 6) ?????? 0.25? ? 0? ===
+    MOV P1, #0
+
+    ; === 7) ????? 0? = 500??? ===
+    MOV R0, #249
+PAUSE:
+    DJNZ R0, PAUSE
+
+    LJMP MAIN
+
+END

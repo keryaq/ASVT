@@ -1,0 +1,75 @@
+$MOD51
+ORG 0000h
+LJMP MAIN
+
+MAIN:
+    MOV 90h, #06h
+    MOV R0, #30 ;zadali skvazhnost
+    
+MAIN_LOOP:
+    SETB 90h ;p1.0 v 1, lampa gorit
+
+    MOV A, R0 ;skopirovali skvazhnost
+    MOV R3, A ; !!!!schetchik ciklov gorenia
+ON_TIME: ;nachalo cirla gorenia
+    JNB 91h, BTN1_PRESSED ;esli p1.1 zazhata - idem na metku btn1_pressed
+    JNB 92h, BTN2_PRESSED ;esli p1.2 zazhata - idem na metku btn2_pressed
+    CALL DELAY_UNIT ;vizov zaderzhki
+    DJNZ R3, ON_TIME ;r3 - 1 i esli != 0, to na idem k on_time. cirl povtoryaetsa r3 raz
+
+    CLR 90h ;sbros p1.0 v 0. lampa gasnet
+
+    MOV A, #100 ;100% perioda
+    CLR C ;sbros flaga perenosa (cy) v 0
+    SUBB A, R0; (DLYA T = 70) a = a - r0 - cy. to est: vremya pauzi = 100% - skvazhnost = 70% ot perioda
+    MOV R3, A ;kopiruem a v r3
+OFF_TIME: ;kogda lampa viklu4ena
+    JNB 91h, BTN1_PRESSED ;proverka knopki
+    JNB 92h, BTN2_PRESSED ;proverka knopki
+    CALL DELAY_UNIT ;vizov zaderzhki
+    DJNZ R3, OFF_TIME; povtoryaem r3 raz (70), t.e. pauza: 70 * 700 mcs = 49 ms
+    
+    LJMP MAIN_LOOP ;perehod v nachalo
+
+BTN1_PRESSED: ;p1.1
+    CLR 90h ;pogasili (test na rabotu)
+    
+    MOV A, R0 ;kopiruem skvazhnost
+    ADD A, #5 ;pribavliaem 5 k skvazhnosti
+    CJNE A, #60, CHECK_INC_MAX ;sravnili s Qmax (60)
+CHECK_INC_MAX: ;proverka s max
+    JC SAVE_INC ;esli a<60, idem d save_inc i sohranyaem zhnachenie
+    MOV A, #60 ;esli a>= 60, stavim a=60
+SAVE_INC:
+    MOV R0, A ;sohranyaem novoe zhachenie skvaznhosti
+    
+WAIT_BTN1:
+    JNB 91h, WAIT_BTN1 ;knopka nazhata - idem k wait_btn1 ;
+    LJMP MAIN_LOOP ;knopka otpushena, idem v main_loop s novoy skvazhnostyu
+
+BTN2_PRESSED:
+    CLR 90h ;gasim
+
+    MOV A, R0 ;kopiruem skvazhnost
+    CLR C
+    SUBB A, #5 ;vichitaem 5
+    CJNE A, #30, CHECK_DEC_MIN ;sravnili s Qmin (30). esli ne ravno - idem k check_dec_min
+CHECK_DEC_MIN:
+    JNC SAVE_DEC ;esli a>=30, idem k save_dec
+    MOV A, #30 ;esli a<30, stavim a = 30
+SAVE_DEC:
+    MOV R0, A ;sohtanyaem
+
+WAIT_BTN2:
+    JNB 92h, WAIT_BTN2 ;zhdem otpuskanie knopki
+    LJMP MAIN_LOOP ;vozvrat v main_loop
+
+DELAY_UNIT:
+    MOV R1, #158 ;r1 - koli4estvo iteraciy cikla zaderzhki
+DLY_LOOP:
+    NOP
+    NOP
+    DJNZ R1, DLY_LOOP
+    RET
+
+    END

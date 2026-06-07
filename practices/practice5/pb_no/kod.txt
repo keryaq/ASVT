@@ -1,0 +1,223 @@
+$MOD51
+
+RS  EQU P3.0
+E   EQU P3.1
+
+ORG 0000H
+    LJMP START
+
+ORG 0030H
+START:
+    MOV SP, #60H
+    MOV P1, #0FFH
+    ACALL LCD_INIT
+    ACALL LCD_CLEAR
+    MOV R1, #0
+    MOV R2, #0
+    MOV R3, #0
+
+MAIN:
+    ; ШАГ 1: Быстрая проверка — нажато ли вообще что-то?
+    MOV P1, #0F8H       ; Подаем 0 на все строки разом
+    MOV A, P1
+    ANL A, #0F8H
+    CJNE A, #0F8H, DETECT ; Если на столбцах появился 0, идем выяснять
+    SJMP MAIN           ; Если нет — мгновенный повтор
+
+DETECT:
+    ; ШАГ 2: Определяем строку
+    MOV P1, #0FFH
+    CLR P1.0
+    MOV A, P1
+    ANL A, #0F8H
+    CJNE A, #0F8H, R1_HIT
+
+    MOV P1, #0FFH
+    CLR P1.1
+    MOV A, P1
+    ANL A, #0F8H
+    CJNE A, #0F8H, R2_HIT
+
+    MOV P1, #0FFH
+    CLR P1.2
+    MOV A, P1
+    ANL A, #0F8H
+    CJNE A, #0F8H, R3_HIT
+    SJMP MAIN
+
+R1_HIT:
+    MOV R0, #0
+    SJMP COL
+R2_HIT:
+    MOV R0, #5
+    SJMP COL
+R3_HIT:
+    MOV R0, #10
+    SJMP COL
+
+COL:
+    ; ШАГ 3: Мгновенное определение столбца
+    JNB P1.3, C1
+    JNB P1.4, C2
+    JNB P1.5, C3
+    JNB P1.6, C4
+    JNB P1.7, C5
+    SJMP MAIN
+
+C1:
+    MOV A, #1
+    ADD A, R0
+    LJMP HANDLE
+C2:
+    MOV A, #2
+    ADD A, R0
+    LJMP HANDLE
+C3:
+    MOV A, #3
+    ADD A, R0
+    LJMP HANDLE
+C4:
+    MOV A, #4
+    ADD A, R0
+    LJMP HANDLE
+C5:
+    MOV A, #5
+    ADD A, R0
+    LJMP HANDLE
+
+HANDLE:
+    ; Логика вычислений
+    DEC A
+    MOV DPTR, #TAB
+    MOVC A, @A+DPTR
+    MOV B, A
+    
+    CJNE A, #43H, NOT_C
+    ACALL LCD_CLEAR
+    MOV R1, #0
+    MOV R2, #0
+    MOV R3, #0
+    LJMP RELEASE
+NOT_C:
+    CJNE A, #3DH, NOT_E
+    ACALL LCD_CLEAR
+    ACALL CALC
+    MOV A, R2
+    ACALL OUT_NUM
+    MOV R1, A
+    LJMP RELEASE
+NOT_E:
+    MOV A, B
+    CLR C
+    SUBB A, #30H
+    JC IS_O
+    MOV A, B
+    SUBB A, #3AH
+    JNC IS_O
+    MOV A, B
+    ACALL LCD_CHAR
+    ANL A, #0FH
+    MOV R4, A
+    MOV A, R1
+    MOV B, #10
+    MUL AB
+    ADD A, R4
+    MOV R1, A
+    LJMP RELEASE
+IS_O:
+    MOV A, B
+    ACALL LCD_CHAR
+    MOV A, R1
+    MOV R2, A
+    MOV R1, #0
+    MOV R3, B
+    LJMP RELEASE
+
+RELEASE:
+    ; ШАГ 4: Ждем физического размыкания PB_NO (самый важный блок)
+    MOV P1, #0F8H
+    MOV A, P1
+    ANL A, #0F8H
+    CJNE A, #0F8H, RELEASE 
+    MOV P1, #0FFH
+    LJMP MAIN
+
+CALC:
+    MOV A, R3
+    CJNE A, #2BH, MNS
+    MOV A, R2
+    ADD A, R1
+    MOV R2, A
+    RET
+MNS:
+    CJNE A, #2DH, MLT
+    MOV A, R2
+    CLR C
+    SUBB A, R1
+    MOV R2, A
+    RET
+MLT:
+    MOV A, R2
+    MOV B, R1
+    MUL AB
+    MOV R2, A
+    RET
+
+OUT_NUM:
+    MOV B, #100
+    DIV AB
+    JZ S_H
+    ADD A, #48
+    ACALL LCD_CHAR
+    MOV A, B
+    MOV B, #10
+    DIV AB
+    ADD A, #48
+    ACALL LCD_CHAR
+    MOV A, B
+    ADD A, #48
+    ACALL LCD_CHAR
+    RET
+S_H:
+    MOV A, B
+    MOV B, #10
+    DIV AB
+    JZ S_T
+    ADD A, #48
+    ACALL LCD_CHAR
+    MOV A, B
+    ADD A, #48
+    ACALL LCD_CHAR
+    RET
+S_T:
+    MOV A, B
+    ADD A, #48
+    ACALL LCD_CHAR
+    RET
+
+LCD_INIT:
+    MOV A, #38H
+    ACALL LCD_CMD
+    MOV A, #0CH
+    ACALL LCD_CMD
+    RET
+LCD_CMD:
+    CLR RS
+    MOV P2, A
+    SETB E
+    CLR E
+    RET
+LCD_CHAR:
+    SETB RS
+    MOV P2, A
+    SETB E
+    CLR E
+    RET
+LCD_CLEAR:
+    MOV A, #01H
+    ACALL LCD_CMD
+    RET
+
+TAB: DB '1','2','3','4','5','6','7','8','9','0','+','-','*','=','C'
+
+END
