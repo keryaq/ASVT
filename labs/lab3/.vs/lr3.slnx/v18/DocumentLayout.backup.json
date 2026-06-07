@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\turni\\source\\repos\\lr3\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{006B85EC-6A16-4BED-8353-3408CAF65B22}|lr3\\lr3.vcxproj|C:\\Users\\turni\\source\\repos\\lr3\\lr3\\FileName.asm||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{006B85EC-6A16-4BED-8353-3408CAF65B22}|lr3\\lr3.vcxproj|solutionrelative:lr3\\FileName.asm||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FileName.asm",
+              "DocumentMoniker": "C:\\Users\\turni\\source\\repos\\lr3\\lr3\\FileName.asm",
+              "RelativeDocumentMoniker": "lr3\\FileName.asm",
+              "ToolTip": "C:\\Users\\turni\\source\\repos\\lr3\\lr3\\FileName.asm*",
+              "RelativeToolTip": "lr3\\FileName.asm*",
+              "ViewState": "AgIAABMAAAAAAAAAAAAuwBQAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-04-25T07:35:31.881Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
